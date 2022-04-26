@@ -23,4 +23,8 @@ public class TestController {
         returnResults.add(locationService.isPassThrough(3, 5));
         return returnResults;
     }
+    @GetMapping(path = {"/aa"})
+    public void test1(){
+        System.out.println();
+    }
 }
