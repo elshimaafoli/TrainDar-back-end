@@ -18,6 +18,7 @@ import java.util.List;
 public class LocationService {
     private StationRepository stationRepository;
     private final TrainRepository trainRepository;
+    private final PathPointsRepository pathPointsRepository;
     //TODO: function take list of users and return the out of range users ,
     //TODO: direction function
     //DONE: sort the path points by longitude will be sorted before insertion
@@ -45,7 +46,6 @@ public class LocationService {
 
     public Location closestLat(Location shared) { //sorted by lats
         ArrayList<PathPoints> pathPoints;
-        PathPointsRepository pathPointsRepository = null;
         //suppose it is sorted
         pathPoints = (ArrayList<PathPoints>) pathPointsRepository.getAllPointsByLat();
         //binary search for closest point
@@ -71,9 +71,8 @@ public class LocationService {
     public Location closestLng(Location shared) {//sorted by lngs
 
         ArrayList<PathPoints> pathPoints;
-        PathPointsRepository pathPointsRepository = null;
         //suppose it is sorted
-        pathPoints = (ArrayList<PathPoints>) pathPointsRepository.getAllPointsByLng();
+        pathPoints = pathPointsRepository.getAllPointsByLng();
         //binary search for closest point
         int first = 0;
         int last = pathPoints.size() - 1;
@@ -114,7 +113,6 @@ public class LocationService {
     public String stationDirection(String s1, String s2) {
 
         //  note that stations stored from aswan to cairo
-        StationRepository stationRepository = null;
         Station station1 = stationRepository.findByName(s1);
         Station station2 = stationRepository.findByName(s2);
         if (station1.getId() > station2.getId()) return "DOWN";
@@ -127,7 +125,6 @@ public class LocationService {
 
     public String DirectionUpDown(Location from, Location to) {
         //path points inserted from aswan to cairo
-        PathPointsRepository pathPointsRepository=null;
         from=closest(from);
         to=closest(to);
         if (pathPointsRepository.getIDByLatLng(from.getLocationLat(),from.getLocationLng())>
@@ -141,31 +138,28 @@ public class LocationService {
         else return "SAME";
     }
 
-    boolean out(Location location){
-        if (location.getLocationLat().doubleValue()==0&&location.getLocationLng().doubleValue()==0)return true;
+    boolean out(Location location) {
+        if (location.getLocationLat().doubleValue() == 0 && location.getLocationLng().doubleValue() == 0)
+            return true;
         return false;
     }
 
     public List<AppUser> outOfRange(List<AppUser> users) {
-        List<AppUser>outs=null;
-        List<AppUser>ins=null;
+        List<AppUser> outs = new ArrayList<>();
         for (AppUser user : users) {
-            Location shared=new Location(user.getLocationLat(),user.getLocationLng());
-            if (out(closest(shared))){
+            Location shared = new Location(user.getLocationLat(), user.getLocationLng());
+            if (out(closest(shared))) {
                 outs.add(user);
-            }
-            else {
-                ins.add(user);
             }
         }
         return outs;
     }
     public List<AppUser> inRange(List<AppUser> users) {
-        List<AppUser>ins=null;
+        List<AppUser> ins = new ArrayList<>();
         Location shared;
         for (AppUser user : users) {
-            shared=new Location(user.getLocationLat(),user.getLocationLng());
-            if (!out(closest(shared))){
+            shared = new Location(user.getLocationLat(), user.getLocationLng());
+            if (!out(closest(shared))) {
                 ins.add(user);
             }
         }

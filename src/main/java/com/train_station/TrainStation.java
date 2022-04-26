@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Entity
 public class TrainStation {
     @EmbeddedId
-    TrainStationKey id;
+    private TrainStationKey id;
     @ManyToOne
     @JsonIgnore
     @MapsId("trainId")
