@@ -32,7 +32,7 @@ public class Train {
     @Column(nullable = false)
     private String type;
     private LocalDateTime lastKnownTime;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "train", cascade =CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "train")
     private List<AppUser> sharedUsers;
 
 }
