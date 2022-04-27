@@ -1,6 +1,8 @@
 package com.train;
 
+import com.appuser.AppUser;
 import com.location.Location;
+import com.location.LocationService;
 import com.shared_data.UserLocation;
 import com.shared_data.custom_data_types.Pair;
 import lombok.*;
@@ -13,9 +15,10 @@ import java.util.*;
 @Data
 @Component
 public class LocationFilteration {
+    private final LocationService locationService;
     private static BigDecimal getAverage(List<Pair<BigDecimal, Long>> values){
         if(values.isEmpty()){
-            return BigDecimal.valueOf(-1);
+            return Location.DEFAULT_LOCATION;
         }
         BigDecimal sum = new BigDecimal(0);
         for(var value : values){
@@ -23,14 +26,28 @@ public class LocationFilteration {
         }
         return sum.divide(BigDecimal.valueOf(values.size()),16, RoundingMode.HALF_UP);
     }
-    public Location removeOutliers(List<UserLocation> locations) {
+    public Location removeOutliers(List<AppUser> users) {
+        //filter users to git only the users that on the railway line
+
+        List<UserLocation> locations = new ArrayList<>();
+        //TODO: remove the outliers
+        TreeSet<Long> outLiers = new TreeSet<>();
+        //git out users that are far away from railway line
+        var tempOutLiers = locationService.outOfRange(users);
+        for(var user : tempOutLiers){
+            outLiers.add(user.getId());
+        }
+        var inRangeUsers = locationService.inRange(users);
+        //convert from list of users to list of userLocation
+        for(var user : inRangeUsers){
+            locations.add(new UserLocation(user.getId(), new Location(user.getLocationLat(), user.getLocationLng())));
+        }
         if(locations.isEmpty()){
-            return new Location(BigDecimal.valueOf(-1),BigDecimal.valueOf(-1));
+            return new Location(Location.DEFAULT_LOCATION,Location.DEFAULT_LOCATION);
         }
         if(locations.size() == 1){
             return locations.get(0).getLocation();
         }
-        TreeSet<Long> outLiers = new TreeSet<>();
         List<Pair<BigDecimal, Long>> lats = new ArrayList<>(),
                 lngs = new ArrayList<>(),
                 filteredLats = new ArrayList<>(),
