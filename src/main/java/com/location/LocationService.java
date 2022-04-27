@@ -5,6 +5,7 @@ import com.shared_data.path.PathPoints;
 import com.shared_data.path.PathPointsRepository;
 import com.station.Station;
 import com.station.StationRepository;
+import com.train.Train;
 import com.train.TrainRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -154,6 +155,7 @@ public class LocationService {
         }
         return outs;
     }
+
     public List<AppUser> inRange(List<AppUser> users) {
         List<AppUser> ins = new ArrayList<>();
         Location shared;
@@ -184,4 +186,20 @@ public class LocationService {
         return false;
     }
 
+    public boolean isTrainActive(Train train){
+        if (train.getLocationLat().equals(Location.DEFAULT_LOCATION) || train.getLocationLng().equals(Location.DEFAULT_LOCATION))
+            return false;
+        return true;
+    }
+
+    public boolean hasTrainPassedCity(Location trainLocation,Location firstCity,Location secondCity){
+        if(DirectionUpDown(firstCity,secondCity).equals(DirectionUpDown(trainLocation,firstCity)))
+            return true;
+        return false;
+    }
+
+    public double timeLeft(Location location1,Location location2){
+        /*returns the time left to reach the destination , it returns seconds */
+        return Math.abs(distance(location1,location2))/Train.AVERAGE_SPEED;
+    }
 }
