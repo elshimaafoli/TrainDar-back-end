@@ -19,6 +19,11 @@ public class TrainController {
         return trainRepository.findAll();
     }
 
+    @GetMapping(path = {"/show-upcoming-trains"})
+    public List<UpcomingTrain> showUpcomingTrains(@RequestParam("first-city") String firstCity, @RequestParam("second-city") String secondCity){
+        return trainService.getUpcomingTrains(firstCity, secondCity);
+    }
+
     @GetMapping(path ={"/{id}"})
     public Train showTrainById(@PathVariable Long id){
         return trainRepository.findById(id).get();

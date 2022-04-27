@@ -20,6 +20,7 @@ public class LocationService {
     private StationRepository stationRepository;
     private final TrainRepository trainRepository;
     private final PathPointsRepository pathPointsRepository;
+
     //TODO: function take list of users and return the out of range users ,
     //TODO: direction function
     //DONE: sort the path points by longitude will be sorted before insertion
@@ -79,7 +80,7 @@ public class LocationService {
         int last = pathPoints.size() - 1;
         int middle = (first + last) / 2;
         double closeValue = Location.CLOSE;
-        Location  middleLocation;
+        Location middleLocation;
 
         while (first <= last) {
             middleLocation = new Location(pathPoints.get(middle).getLocationLat(), pathPoints.get(middle).getLocationLng());
@@ -96,16 +97,16 @@ public class LocationService {
         return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
     }
 
-    public Location closest (Location shared){
-        Location closestLat=closestLat(shared);
-        Location closestLng=closestLng(shared);
-        if (closestLng.getLocationLat().doubleValue()==0
-                &&closestLng.getLocationLng().doubleValue()==0
-                &&closestLat.getLocationLat().doubleValue()==0
-                &&closestLat.getLocationLng().doubleValue()==0)
-            return new Location(BigDecimal.valueOf(0),BigDecimal.valueOf(0));
+    public Location closest(Location shared) {
+        Location closestLat = closestLat(shared);
+        Location closestLng = closestLng(shared);
+        if (closestLng.getLocationLat().doubleValue() == 0
+                && closestLng.getLocationLng().doubleValue() == 0
+                && closestLat.getLocationLat().doubleValue() == 0
+                && closestLat.getLocationLng().doubleValue() == 0)
+            return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
         else {
-            if (distance(shared,closestLat)<distance(shared,closestLng))
+            if (distance(shared, closestLat) < distance(shared, closestLng))
                 return closestLat;
             else return closestLng;
         }
@@ -126,17 +127,15 @@ public class LocationService {
 
     public String DirectionUpDown(Location from, Location to) {
         //path points inserted from aswan to cairo
-        from=closest(from);
-        to=closest(to);
-        if (pathPointsRepository.getIDByLatLng(from.getLocationLat(),from.getLocationLng())>
-                pathPointsRepository.getIDByLatLng(to.getLocationLat(),to.getLocationLng())){
+        from = closest(from);
+        to = closest(to);
+        if (pathPointsRepository.getIDByLatLng(from.getLocationLat(), from.getLocationLng()) >
+                pathPointsRepository.getIDByLatLng(to.getLocationLat(), to.getLocationLng())) {
             return "DOWN";
-        }
-        else if (pathPointsRepository.getIDByLatLng(from.getLocationLat(),from.getLocationLng())>
-                pathPointsRepository.getIDByLatLng(to.getLocationLat(),to.getLocationLng())){
+        } else if (pathPointsRepository.getIDByLatLng(from.getLocationLat(), from.getLocationLng()) >
+                pathPointsRepository.getIDByLatLng(to.getLocationLat(), to.getLocationLng())) {
             return "UP";
-        }
-        else return "SAME";
+        } else return "SAME";
     }
 
     boolean out(Location location) {
@@ -169,15 +168,15 @@ public class LocationService {
     }
 
     //given train id & station id this function will return if this train pass Through this station or not
-    public boolean isPassThrough(long trainId, long stationId){
+    public boolean isPassThrough(long trainId, long stationId) {
         var existedTrain = trainRepository.findById(trainId);
         var existedStation = stationRepository.findById(stationId);
-        if(existedTrain.isEmpty() || existedStation.isEmpty()){
+        if (existedTrain.isEmpty() || existedStation.isEmpty()) {
             return false;
         }
         //iterate over all this train's stations and check if the station exists or not
-        for(var station : existedTrain.get().getStations()){
-            if(station.getStation().getId() == stationId){
+        for (var station : existedTrain.get().getStations()) {
+            if (station.getStation().getId() == stationId) {
                 //station found
                 return true;
             }
@@ -186,20 +185,20 @@ public class LocationService {
         return false;
     }
 
-    public boolean isTrainActive(Train train){
+    public boolean isTrainActive(Train train) {
         if (train.getLocationLat().equals(Location.DEFAULT_LOCATION) || train.getLocationLng().equals(Location.DEFAULT_LOCATION))
             return false;
         return true;
     }
 
-    public boolean hasTrainPassedCity(Location trainLocation,Location firstCity,Location secondCity){
-        if(DirectionUpDown(firstCity,secondCity).equals(DirectionUpDown(trainLocation,firstCity)))
-            return true;
-        return false;
+    public boolean hasTrainPassedCity(Location trainLocation, Location firstCity, Location secondCity) {
+        if (DirectionUpDown(firstCity, secondCity).equals(DirectionUpDown(trainLocation, firstCity)))
+            return false;
+        return true;
     }
 
-    public double timeLeft(Location location1,Location location2){
+    public int timeLeft(Location location1, Location location2) {
         /*returns the time left to reach the destination , it returns seconds */
-        return Math.abs(distance(location1,location2))/Train.AVERAGE_SPEED;
+        return (int) (Math.abs(distance(location1, location2)) / Train.AVERAGE_SPEED);
     }
 }
