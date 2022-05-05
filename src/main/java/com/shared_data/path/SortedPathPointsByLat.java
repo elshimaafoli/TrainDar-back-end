@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 public class SortedPathPointsByLat {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long pointIndex;
     private Long id;
     @Column(columnDefinition = "TEXT")
     private BigDecimal locationLat = Location.DEFAULT_LOCATION;

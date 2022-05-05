@@ -21,12 +21,6 @@ public class LocationService {
     private final TrainRepository trainRepository;
     private final PathPointsRepository pathPointsRepository;
 
-    //TODO: function take list of users and return the out of range users ,
-    //TODO: direction function
-    //DONE: sort the path points by longitude will be sorted before insertion
-    //DONE: sort the path points by latitude will be sorted before insertion
-    //DONE: closest for longitude and compare the closest longitude and the latitude then return the closest locatin
-    //DONE
     public double distance(Location point1, Location point2) {
         double locationDistance = 0;
         BigDecimal r2d = BigDecimal.valueOf((180.0D) / (3.141592653589793D));
@@ -48,8 +42,8 @@ public class LocationService {
 
     public Location closestLat(Location shared) { //sorted by lats
         ArrayList<PathPoints> pathPoints;
-        //suppose it is sorted
-        pathPoints = (ArrayList<PathPoints>) pathPointsRepository.getAllPointsByLat();
+        //suppose it was sorted
+        pathPoints = pathPointsRepository.getAllPointsByLat();
         //binary search for closest point
         int first = 0;
         int last = pathPoints.size() - 1;
@@ -129,11 +123,11 @@ public class LocationService {
         //path points inserted from aswan to cairo
         from = closest(from);
         to = closest(to);
-        if (pathPointsRepository.getIDByLatLng(from.getLocationLat(), from.getLocationLng()) >
-                pathPointsRepository.getIDByLatLng(to.getLocationLat(), to.getLocationLng())) {
+        int fromIndex=pathPointsRepository.getIDByLatLng(from.getLocationLat(), from.getLocationLng())
+                ,toIndex=pathPointsRepository.getIDByLatLng(to.getLocationLat(), to.getLocationLng());
+        if (fromIndex> toIndex) {
             return "DOWN";
-        } else if (pathPointsRepository.getIDByLatLng(from.getLocationLat(), from.getLocationLng()) >
-                pathPointsRepository.getIDByLatLng(to.getLocationLat(), to.getLocationLng())) {
+        } else if (fromIndex <toIndex) {
             return "UP";
         } else return "SAME";
     }
@@ -199,6 +193,7 @@ public class LocationService {
 
     public int timeLeft(Location location1, Location location2) {
         /*returns the time left to reach the destination , it returns seconds */
-        return (int) (Math.abs(distance(location1, location2)) / Train.AVERAGE_SPEED);
+        return (int)( (Math.abs(distance(location1, location2)) / Train.AVERAGE_SPEED));
     }
+
 }

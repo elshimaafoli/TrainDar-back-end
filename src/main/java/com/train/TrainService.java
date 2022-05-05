@@ -72,16 +72,16 @@ public class TrainService {
         var firstCity = stationRepository.findByName(firstCityName);
         var secondCity = stationRepository.findByName(secondCityName);
         List<UpcomingTrain>upcomingTrains = new ArrayList<>();
-        //git all trains that pass through firstCity
+        //get all trains that pass through firstCity
         TreeSet<Long>trainsTreeSet = new TreeSet<>();
         for(var trainStation : firstCity.getTrains()){
             trainsTreeSet.add(trainStation.getTrain().getId());
         }
-        //git all valid trains
+        //get all valid trains
         for(var trainStation : secondCity.getTrains()){
             //boolean to check if this train is valid
             var currTrain = trainStation.getTrain();
-            //if train noe existed in both cities
+            //if train not existed in both cities
             if(!trainsTreeSet.contains(currTrain.getId())){
                 continue;
             }

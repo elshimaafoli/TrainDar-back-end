@@ -22,7 +22,6 @@ public class Train {
     private Long id;
     @OneToMany(mappedBy = "train")
     private List<TrainStation> stations;
-
     @Column(columnDefinition = "TEXT")
     private BigDecimal locationLat = Location.DEFAULT_LOCATION;
     @Column(columnDefinition = "TEXT")

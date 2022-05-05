@@ -6,6 +6,7 @@ import com.shared_data.path.PathPoints;
 import com.shared_data.path.PathPointsRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,8 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("api/v1/test")
 public class TestController {
+    public PathPointsRepository pathPointsRepository;
     LocationService locationService;
     List<Boolean> returnResults = new ArrayList<>();
+
     @GetMapping
     public List<Boolean> runTest(){
         returnResults.clear();
@@ -26,10 +29,6 @@ public class TestController {
         returnResults.add(locationService.isPassThrough(3, 2));
         returnResults.add(locationService.isPassThrough(3, 5));
         return returnResults;
-    }
-    @GetMapping(path = {"/aa"})
-    public void test1(){
-        System.out.println();
     }
 
     @GetMapping(path = {"/test2"})
@@ -43,24 +42,69 @@ public class TestController {
         return locationService.hasTrainPassedCity(l1,l3,l2);
     }
 
-    public PathPointsRepository pathPointsRepository;
+    //tested
     @GetMapping(path = {"/pathPointsTest"})
     public List<PathPoints> pathPointsTest(){
+        return pathPointsRepository.findAll();
+    }
+
+    //tested
+    @GetMapping(path = {"/pathPointsByLatTest"})
+    public List<PathPoints> pathPointsByLatTest(){
         return pathPointsRepository.getAllPointsByLat();
     }
 
-        @GetMapping(path = {"/pathPointsIDTest"})
-    public Long pathPointsIDTest(){
-        //26.551245,31.699417)
-        return pathPointsRepository.getIDByLatLng(BigDecimal.valueOf(26.551245),BigDecimal.valueOf(31.699417));
+    //tested
+    @GetMapping(path = {"/pathPointsByLngTest"})
+    public List<PathPoints> pathPointsByLngTest(){
+        return pathPointsRepository.getAllPointsByLng();
     }
 
-   /* @GetMapping(path = {"/timeLeftTest"})
+    //tested
+    @GetMapping(path = {"/pathPointsIDTest"})
+    public int pathPointsIDTest(){
+        return pathPointsRepository.getIDByLatLng(BigDecimal.valueOf(27.181265), BigDecimal.valueOf(31.187582));
+    }
+
+    //tested
+    @GetMapping(path = {"/timeLeftTest"})
     public double timeLeftTest(){
         Location location1=new Location(BigDecimal.valueOf(27.181265),BigDecimal.valueOf(31.187582)),
-                location2=new Location(BigDecimal.valueOf(27.18112),BigDecimal.valueOf(31.187607));
+                location2=new Location(BigDecimal.valueOf(28.18112),BigDecimal.valueOf(31.187607));
         return locationService.timeLeft(location1,location2);
-    }*/
+    }
+
+    //tested
+    @GetMapping(path = {"/stationDirection/{n1}-{n2}"})
+    public String stationDirectionTest(@PathVariable String n1,@PathVariable String n2){
+        return locationService.stationDirection(n1,n2);
+    }
+
+    //tested
+    @GetMapping(path = {"/DirectionUpDown/{lat1}-{lng1}-{lat2}-{lng2}"})
+    public String DirectionUpDownTest(@PathVariable BigDecimal lat1, @PathVariable BigDecimal lng1, @PathVariable BigDecimal lat2, @PathVariable BigDecimal lng2)
+    {
+        Location location1=new Location(lat1,lng1),
+                location2 =new Location(lat2,lng2);
+        return locationService.DirectionUpDown(location1,location2);
+    }
+
+    //hard test
+    @GetMapping(path = {"/D"})
+    public String D()
+    {
+        Location location1=new Location(BigDecimal.valueOf(26.55654923372615),BigDecimal.valueOf(31.693084504454426)),
+                location2 =new Location(BigDecimal.valueOf(26.557952111875835),BigDecimal.valueOf(31.69158138626245));
+        return locationService.DirectionUpDown(location1,location2);
+    }
+
+    //tested
+    @GetMapping(path = {"/Closest/{lat1}-{lng1}"})
+    public int c(@PathVariable BigDecimal lat1, @PathVariable BigDecimal lng1){
+        Location l=locationService.closest(new Location(lat1,lng1));
+        return pathPointsRepository.getIDByLatLng(l.getLocationLat(),l.getLocationLng());
+    }
+    //26.55654923372615-31.693084504454426-26.557952111875835, 31.69158138626245 //UP
 }
 
 
