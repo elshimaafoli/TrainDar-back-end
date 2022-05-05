@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 public class Location {
     public static final BigDecimal DEFAULT_LOCATION = BigDecimal.valueOf(-1);
     private BigDecimal locationLat, locationLng;
-    public static final double CLOSE = 30d;
+    public static final double CLOSE = 30;
 
     public Location() {
         locationLat = BigDecimal.valueOf(0);

@@ -16,6 +16,7 @@ import java.util.*;
 @Component
 public class LocationFilteration {
     private final LocationService locationService;
+
     private static BigDecimal getAverage(List<Pair<BigDecimal, Long>> values){
         if(values.isEmpty()){
             return Location.DEFAULT_LOCATION;
@@ -26,6 +27,7 @@ public class LocationFilteration {
         }
         return sum.divide(BigDecimal.valueOf(values.size()),16, RoundingMode.HALF_UP);
     }
+
     public Location removeOutliers(List<AppUser> users) {
         //filter users to git only the users that on the railway line
 

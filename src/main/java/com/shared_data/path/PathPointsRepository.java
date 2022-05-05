@@ -10,12 +10,18 @@ import java.util.ArrayList;
 @Repository
 @Transactional(readOnly = true)
 public interface PathPointsRepository extends JpaRepository<PathPoints, Long> {
-    @Query ("select id,locationLat,locationLng from SortedPathPointsByLat ")
+
+    //@Query ("select id,locationLat,locationLng from PathPoints ")
+    //Select new entity.package.path.PathPoints(id,locationLat,LocationLng) from PathPoints
+    //@Query ("select id,locationLat,locationLng from SortedPathPointsByLat ")
+    ArrayList<PathPoints> findAll();
+
+    @Query("Select new PathPoints(id,locationLat,locationLng) from SortedPathPointsByLat ")
     ArrayList<PathPoints> getAllPointsByLat();
 
-    @Query ("select id,locationLat,locationLng from SortedPathPointsByLng ")
+    @Query("Select new PathPoints(id,locationLat,locationLng) from SortedPathPointsByLng ")
     ArrayList<PathPoints> getAllPointsByLng();
 
     @Query("select id from PathPoints where locationLat=?1 and locationLng=?2")
-    Long getIDByLatLng(BigDecimal locationLat, BigDecimal locationLng);
+    int getIDByLatLng(BigDecimal locationLat, BigDecimal locationLng);
 }
