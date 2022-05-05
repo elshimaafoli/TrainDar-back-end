@@ -111,6 +111,7 @@ public class LocationFilteration {
                 filteredLngs.add(new Pair<>(lngs.get(i).first, lngs.get(i).second));
             }
         }
-        return new Location(getAverage(filteredLats), getAverage(filteredLngs));
+        // return closest location
+        return locationService.closest(new Location(getAverage(filteredLats), getAverage(filteredLngs)));
     }
 }

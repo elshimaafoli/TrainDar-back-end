@@ -4,6 +4,7 @@ import com.location.Location;
 import com.location.LocationService;
 import com.shared_data.path.PathPoints;
 import com.shared_data.path.PathPointsRepository;
+import com.train.Train;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,16 +32,6 @@ public class TestController {
         return returnResults;
     }
 
-    @GetMapping(path = {"/test2"})
-    public boolean runTest2() {
-        //27.198504550269035, 31.10727234294203
-        Location l1=new Location(BigDecimal.valueOf(27.198504550269035),BigDecimal.valueOf(31.10727234294203));
-        //27.201152005114828, 31.102807419258447
-        Location l2=new Location(BigDecimal.valueOf(27.201152005114828),BigDecimal.valueOf(31.102807419258447));
-        //27.206005509163948, 31.09474115795374
-        Location l3=new Location(BigDecimal.valueOf(27.206005509163948),BigDecimal.valueOf(31.09474115795374));
-        return locationService.hasTrainPassedCity(l1,l3,l2);
-    }
 
     //tested
     @GetMapping(path = {"/pathPointsTest"})
@@ -63,7 +54,7 @@ public class TestController {
     //tested
     @GetMapping(path = {"/pathPointsIDTest"})
     public int pathPointsIDTest(){
-        return pathPointsRepository.getIDByLatLng(BigDecimal.valueOf(27.181265), BigDecimal.valueOf(31.187582));
+        return pathPointsRepository.getIDByLatLng(BigDecimal.valueOf(26.551245), BigDecimal.valueOf(31.699417));
     }
 
     //tested
@@ -105,6 +96,43 @@ public class TestController {
         return pathPointsRepository.getIDByLatLng(l.getLocationLat(),l.getLocationLng());
     }
     //26.55654923372615-31.693084504454426-26.557952111875835, 31.69158138626245 //UP
+
+    @GetMapping(path = {"/is-active"})
+    public boolean isActive(){
+        Train train = new Train();
+        train.setId(5L);
+        train.setLocationLat(BigDecimal.valueOf(5));
+        train.setLocationLng(BigDecimal.valueOf(5));
+        train.setDirection("AA");
+        train.setType("dsa");
+        return locationService.isTrainActive(train);
+    }
+    @GetMapping(path = {"/has-passed"})
+    public boolean hasPassed() {
+        Location location1 = new Location(BigDecimal.valueOf(26.696219951117374), BigDecimal.valueOf(31.602375753873698));
+        Location location2 = new Location(BigDecimal.valueOf(26.76833502505966), BigDecimal.valueOf(31.506010858006096));
+        Location location3 = new Location(BigDecimal.valueOf(26.905410706549052), BigDecimal.valueOf(31.431620024564662));
+        Train train = new Train();
+        train.setId(5L);
+        train.setLocationLat(location1.getLocationLat());
+        train.setLocationLng(location1.getLocationLng());
+        train.setDirection("UP");
+        train.setType("dsa");
+        return locationService.hasTrainPassedCity(train, location2, location3);
+    }
+    @GetMapping(path = {"/distance"})
+    public double getDistance(){
+        Location location1=new Location(BigDecimal.valueOf(26.551245),BigDecimal.valueOf(31.699417));
+        Location location2 =new Location(BigDecimal.valueOf(26.551401),BigDecimal.valueOf(31.69921));
+        return locationService.distance(location1, location2);
+    }
+
+    @GetMapping(path = {"/LinearClosest/{lat1}-{lng1}"})
+    public int c2(@PathVariable BigDecimal lat1, @PathVariable BigDecimal lng1){
+        Location l=locationService.closest(new Location(lat1,lng1));
+        return pathPointsRepository.getIDByLatLng( l.getLocationLat(),l.getLocationLng());
+    }
+    //26.55654923372615-31.693084504454426-26.557952111875835-31.69158138626245 //UP
 }
 
 
