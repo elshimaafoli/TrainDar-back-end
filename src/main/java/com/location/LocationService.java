@@ -7,6 +7,7 @@ import com.station.Station;
 import com.station.StationRepository;
 import com.train.Train;
 import com.train.TrainRepository;
+import com.train.TrainService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,16 @@ import java.util.List;
 @AllArgsConstructor
 public class LocationService {
     private StationRepository stationRepository;
-    private final TrainRepository trainRepository;
-    private final PathPointsRepository pathPointsRepository;
+    private TrainRepository trainRepository;
+    private PathPointsRepository pathPointsRepository;
+    ArrayList<PathPoints> pathPoints,pathPointsByLat,pathPointsByLng;
+
+    public LocationService(){
+        //suppose it was sorted
+        pathPoints = pathPointsRepository.findAll();
+        pathPointsByLat = pathPointsRepository.getAllPointsByLat();
+        pathPointsByLng = pathPointsRepository.getAllPointsByLng();
+    }
 
     public double distance(Location point1, Location point2) {
         double locationDistance = 0;
@@ -40,18 +49,16 @@ public class LocationService {
         return locationDistance;
     }
 
-    public Location closestLat(Location shared) { //sorted by lats
-        ArrayList<PathPoints> pathPoints;
-        //suppose it was sorted
-        pathPoints = pathPointsRepository.getAllPointsByLat();
+    public Location closestLat(Location shared) {
+        //sorted by lats
         //binary search for closest point
         int first = 0;
-        int last = pathPoints.size() - 1;
+        int last = pathPointsByLat.size() - 1;
         int middle = (first + last) / 2;
         double closeValue = Location.CLOSE;
-        Location middleLocation;
+        Location middleLocation=new Location();
         while (first <= last) {
-            middleLocation = new Location(pathPoints.get(middle).getLocationLat(), pathPoints.get(middle).getLocationLng());
+            middleLocation = new Location(pathPointsByLat.get(middle).getLocationLat(), pathPointsByLat.get(middle).getLocationLng());
             if (Math.abs(distance(shared, middleLocation)) <= closeValue) {
                 return middleLocation;
             } else if (shared.getLocationLat().doubleValue() > middleLocation.getLocationLat().doubleValue()) {
@@ -61,23 +68,21 @@ public class LocationService {
             }
             middle = (first + last) / 2;
         }
-        return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+//        return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        return middleLocation;
     }
 
-    public Location closestLng(Location shared) {//sorted by lngs
-
-        ArrayList<PathPoints> pathPoints;
-        //suppose it is sorted
-        pathPoints = pathPointsRepository.getAllPointsByLng();
+    public Location closestLng(Location shared) {
+        //sorted by lngs
         //binary search for closest point
         int first = 0;
-        int last = pathPoints.size() - 1;
+        int last = pathPointsByLng.size() - 1;
         int middle = (first + last) / 2;
         double closeValue = Location.CLOSE;
-        Location middleLocation;
+        Location middleLocation=new Location();
 
         while (first <= last) {
-            middleLocation = new Location(pathPoints.get(middle).getLocationLat(), pathPoints.get(middle).getLocationLng());
+            middleLocation = new Location(pathPointsByLng.get(middle).getLocationLat(), pathPointsByLng.get(middle).getLocationLng());
             if (Math.abs(distance(shared, middleLocation)) <= closeValue) {
                 return middleLocation;
             } else if (shared.getLocationLng().doubleValue() > middleLocation.getLocationLng().doubleValue()) {
@@ -87,37 +92,44 @@ public class LocationService {
             }
             middle = (first + last) / 2;
         }
-
-        return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        return middleLocation;
+        //return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
     }
 
     public Location closest(Location shared) {
         Location closestLat = closestLat(shared);
         Location closestLng = closestLng(shared);
-        if (closestLng.getLocationLat().doubleValue() == 0
-                && closestLng.getLocationLng().doubleValue() == 0
-                && closestLat.getLocationLat().doubleValue() == 0
-                && closestLat.getLocationLng().doubleValue() == 0)
-            return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        else {
-            if (distance(shared, closestLat) < distance(shared, closestLng))
-                return closestLat;
-            else return closestLng;
+        if (distance(shared, closestLat) < distance(shared, closestLng))
+            return closestLat;
+        else return closestLng;
+
+    }
+
+    public Location linearClosest(Location shared){
+        double distance =1e18;
+        Location closeLocation=new Location(),temp=new Location();
+        for (int i=0;i<pathPoints.size();i++){
+            temp=new Location(pathPoints.get(i).getLocationLat(),pathPoints.get(i).getLocationLng());
+            if (distance > distance(shared,temp)) {
+                closeLocation = temp;
+                distance=distance(shared,temp);
+            }
         }
+        return closeLocation;
     }
 
-    public String stationDirection(String s1, String s2) {
-
-        //  note that stations stored from aswan to cairo
-        Station station1 = stationRepository.findByName(s1);
-        Station station2 = stationRepository.findByName(s2);
-        if (station1.getId() > station2.getId()) return "DOWN";
-            //down ...the train run from South to North
-        else if (station1.getId() < station2.getId()) return "UP";
-            //up... the train run from North to South
-        else return "SAME";
-        //if (station1.getId()<station2.getId())
-    }
+//    public String stationDirection(String s1, String s2) {
+//
+//        //  note that stations stored from aswan to cairo
+//        Station station1 = stationRepository.findByName(s1);
+//        Station station2 = stationRepository.findByName(s2);
+//        if (station1.getId() > station2.getId()) return "DOWN";
+//            //down ...the train run from South to North
+//        else if (station1.getId() < station2.getId()) return "UP";
+//            //up... the train run from North to South
+//        else return "SAME";
+//        //if (station1.getId()<station2.getId())
+//    }
 
     public String DirectionUpDown(Location from, Location to) {
         //path points inserted from aswan to cairo
@@ -133,7 +145,9 @@ public class LocationService {
     }
 
     boolean out(Location location) {
-        if (location.getLocationLat().doubleValue() == 0 && location.getLocationLng().doubleValue() == 0)
+        TrainService trainService;
+        Location close=closest(location);
+        if (distance(close,location)>Location.CLOSE)
             return true;
         return false;
     }
@@ -142,7 +156,7 @@ public class LocationService {
         List<AppUser> outs = new ArrayList<>();
         for (AppUser user : users) {
             Location shared = new Location(user.getLocationLat(), user.getLocationLng());
-            if (out(closest(shared))) {
+            if (out(shared)) {
                 outs.add(user);
             }
         }
@@ -197,3 +211,9 @@ public class LocationService {
     }
 
 }
+/*
+* points
+* profile
+*
+*
+* */
