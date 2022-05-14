@@ -30,6 +30,7 @@ public class TestController {
     StationService stationService;
     StationRepository stationRepository;
     List<Boolean> returnResults = new ArrayList<>();
+    private final StationService stationService;
 
     @GetMapping
     public List<Boolean> runTest(){
@@ -147,6 +148,11 @@ public class TestController {
         return pathPointsRepository.getIDByLatLng( l.getLocationLat(),l.getLocationLng());
     }
     //26.55654923372615-31.693084504454426-26.557952111875835-31.69158138626245 //UP
+    @GetMapping(path="/checkoutNearestStationsTest/{id}")
+    public List<NearestStation> checkoutNearestStations(@PathVariable Long id){
+        return stationService.checkoutNearestStations(id);
+    }
+
 }
 
 
