@@ -97,8 +97,8 @@ public class TrainService {
                 continue;
             }
             //if curr train has passed the first station
-            if(!locationService.hasTrainPassedCity(
-                      new Location(currTrain.getLocationLat(), currTrain.getLocationLng())
+            if(locationService.hasTrainPassedCity(
+                      currTrain
                     , new Location(firstCity.getLocationLat(), firstCity.getLocationLng())
                     , new Location(secondCity.getLocationLat(), secondCity.getLocationLng())
                     )){

@@ -56,7 +56,11 @@ public class LocationService {
         int last = pathPointsByLat.size() - 1;
         int middle = (first + last) / 2;
         double closeValue = Location.CLOSE;
+<<<<<<< HEAD
         Location middleLocation=new Location();
+=======
+        Location middleLocation = new Location();
+>>>>>>> 366e6ce41734ed7f6868d0e2a5784cc12d6ec818
         while (first <= last) {
             middleLocation = new Location(pathPointsByLat.get(middle).getLocationLat(), pathPointsByLat.get(middle).getLocationLng());
             if (Math.abs(distance(shared, middleLocation)) <= closeValue) {
@@ -79,7 +83,11 @@ public class LocationService {
         int last = pathPointsByLng.size() - 1;
         int middle = (first + last) / 2;
         double closeValue = Location.CLOSE;
+<<<<<<< HEAD
         Location middleLocation=new Location();
+=======
+        Location middleLocation = new Location();
+>>>>>>> 366e6ce41734ed7f6868d0e2a5784cc12d6ec818
 
         while (first <= last) {
             middleLocation = new Location(pathPointsByLng.get(middle).getLocationLat(), pathPointsByLng.get(middle).getLocationLng());
@@ -96,7 +104,7 @@ public class LocationService {
         //return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
     }
 
-    public Location closest(Location shared) {
+    public Location binaryClosest(Location shared) {
         Location closestLat = closestLat(shared);
         Location closestLng = closestLng(shared);
         if (distance(shared, closestLat) < distance(shared, closestLng))
@@ -105,6 +113,7 @@ public class LocationService {
 
     }
 
+<<<<<<< HEAD
     public Location linearClosest(Location shared){
         double distance =1e18;
         Location closeLocation=new Location(),temp=new Location();
@@ -116,6 +125,36 @@ public class LocationService {
             }
         }
         return closeLocation;
+=======
+    public Location closest(Location shared) {
+        ArrayList<PathPoints> pathPoints;
+        //suppose it is sorted
+        pathPoints = pathPointsRepository.findAll();
+        double distance = 1e18;
+        Location closeLocation = new Location(), temp = new Location();
+        for (int i = 0; i < pathPoints.size(); i++) {
+            temp = new Location(pathPoints.get(i).getLocationLat(), pathPoints.get(i).getLocationLng());
+            if (distance > distance(shared, temp)) {
+                closeLocation = temp;
+                distance = distance(shared, temp);
+            }
+        }
+        return closeLocation;
+    }
+
+
+    public String stationDirection(String s1, String s2) {
+
+        //  note that stations stored from aswan to cairo
+        Station station1 = stationRepository.findByName(s1);
+        Station station2 = stationRepository.findByName(s2);
+        if (station1.getId() > station2.getId()) return "DOWN";
+            //down ...the train run from South to North
+        else if (station1.getId() < station2.getId()) return "UP";
+            //up... the train run from North to South
+        else return "SAME";
+        //if (station1.getId()<station2.getId())
+>>>>>>> 366e6ce41734ed7f6868d0e2a5784cc12d6ec818
     }
 
 //    public String stationDirection(String s1, String s2) {
@@ -135,19 +174,23 @@ public class LocationService {
         //path points inserted from aswan to cairo
         from = closest(from);
         to = closest(to);
-        int fromIndex=pathPointsRepository.getIDByLatLng(from.getLocationLat(), from.getLocationLng())
-                ,toIndex=pathPointsRepository.getIDByLatLng(to.getLocationLat(), to.getLocationLng());
-        if (fromIndex> toIndex) {
+        int fromIndex = pathPointsRepository.getIDByLatLng(from.getLocationLat(), from.getLocationLng()), toIndex = pathPointsRepository.getIDByLatLng(to.getLocationLat(), to.getLocationLng());
+        if (fromIndex > toIndex) {
             return "DOWN";
-        } else if (fromIndex <toIndex) {
+        } else if (fromIndex < toIndex) {
             return "UP";
         } else return "SAME";
     }
 
     boolean out(Location location) {
+<<<<<<< HEAD
         TrainService trainService;
         Location close=closest(location);
         if (distance(close,location)>Location.CLOSE)
+=======
+        Location close = closest(location);
+        if (distance(close, location) > 30d)
+>>>>>>> 366e6ce41734ed7f6868d0e2a5784cc12d6ec818
             return true;
         return false;
     }
@@ -199,15 +242,16 @@ public class LocationService {
         return true;
     }
 
-    public boolean hasTrainPassedCity(Location trainLocation, Location firstCity, Location secondCity) {
-        if (DirectionUpDown(firstCity, secondCity).equals(DirectionUpDown(trainLocation, firstCity)))
+    public boolean hasTrainPassedCity(Train train, Location firstCity, Location secondCity) {
+        Location trainLocation = new Location(train.getLocationLat(), train.getLocationLng());
+        if (DirectionUpDown(firstCity, secondCity).equals(train.getDirection()) && DirectionUpDown(firstCity, secondCity).equals(DirectionUpDown(trainLocation, firstCity)))
             return false;
         return true;
     }
 
     public int timeLeft(Location location1, Location location2) {
         /*returns the time left to reach the destination , it returns seconds */
-        return (int)( (Math.abs(distance(location1, location2)) / Train.AVERAGE_SPEED));
+        return (int) ((Math.abs(distance(location1, location2)) / Train.AVERAGE_SPEED));
     }
 
 }
