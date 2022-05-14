@@ -4,7 +4,15 @@ import com.location.Location;
 import com.location.LocationService;
 import com.shared_data.path.PathPoints;
 import com.shared_data.path.PathPointsRepository;
+<<<<<<< HEAD
+import com.station.NearestStation;
+import com.station.Station;
+import com.station.StationRepository;
+import com.station.StationService;
+import com.train.TrainService;
+=======
 import com.train.Train;
+>>>>>>> 366e6ce41734ed7f6868d0e2a5784cc12d6ec818
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +29,9 @@ import java.util.List;
 public class TestController {
     public PathPointsRepository pathPointsRepository;
     LocationService locationService;
+    TrainService trainService;
+    StationService stationService;
+    StationRepository stationRepository;
     List<Boolean> returnResults = new ArrayList<>();
 
     @GetMapping
@@ -68,7 +79,10 @@ public class TestController {
     //tested
     @GetMapping(path = {"/stationDirection/{n1}-{n2}"})
     public String stationDirectionTest(@PathVariable String n1,@PathVariable String n2){
-        return locationService.stationDirection(n1,n2);
+        Station station1=stationRepository.findByName(n1),station2=stationRepository.findByName(n2);
+        Location location1=new Location(station1.getLocationLat(),station1.getLocationLng()),
+                location2=new Location(station2.getLocationLat(),station2.getLocationLng());
+        return locationService.DirectionUpDown(location1,location2);
     }
 
     //tested
@@ -95,6 +109,22 @@ public class TestController {
         Location l=locationService.closest(new Location(lat1,lng1));
         return pathPointsRepository.getIDByLatLng(l.getLocationLat(),l.getLocationLng());
     }
+<<<<<<< HEAD
+    //26.55654923372615-31.693084504454426-26.557952111875835-31.69158138626245 //UP
+
+    @GetMapping(path = {"/LinearrClosest/{lat1}-{lng1}"})
+    public int c2(@PathVariable BigDecimal lat1, @PathVariable BigDecimal lng1){
+        Location l=locationService.linearClosest(new Location(lat1,lng1));
+        return pathPointsRepository.getIDByLatLng( l.getLocationLat(),l.getLocationLng());
+    }
+    //26.55654923372615-31.693084504454426-26.557952111875835-31.69158138626245 //UP
+
+    @GetMapping(path="/checkoutNearestStationsTest/{id}")
+    public List<NearestStation> checkoutNearestStations(@PathVariable Long id){
+        return stationService.checkoutNearestStations(id);
+    }
+
+=======
     //26.55654923372615-31.693084504454426-26.557952111875835, 31.69158138626245 //UP
 
     @GetMapping(path = {"/is-active"})
@@ -133,6 +163,7 @@ public class TestController {
         return pathPointsRepository.getIDByLatLng( l.getLocationLat(),l.getLocationLng());
     }
     //26.55654923372615-31.693084504454426-26.557952111875835-31.69158138626245 //UP
+>>>>>>> 366e6ce41734ed7f6868d0e2a5784cc12d6ec818
 }
 
 

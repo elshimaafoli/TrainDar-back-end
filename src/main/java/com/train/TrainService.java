@@ -4,6 +4,8 @@ import com.appuser.AppUserRepository;
 import com.location.Location;
 import com.location.LocationService;
 import com.shared_data.UserLocation;
+import com.shared_data.path.PathPoints;
+import com.shared_data.path.PathPointsRepository;
 import com.station.StationRepository;
 import com.train_station.TrainStation;
 import lombok.AllArgsConstructor;
@@ -114,4 +116,5 @@ public class TrainService {
         }
         return upcomingTrains;
     }
+
 }

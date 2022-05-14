@@ -22,7 +22,6 @@ public class Station {
     private Long id;
     @OneToMany(mappedBy = "station")
     List<TrainStation> trains;
-
     @Column(columnDefinition = "TEXT")
     private String name;
     @Column(columnDefinition = "TEXT")
