@@ -20,8 +20,8 @@ public class StationService {
     private final LocationService locationService;
     private final PathPointsRepository pathPointsRepository;
 
-    public List<Station> findAll() {
-        return stationRepository.findAll();
+    public List<String> findAllCityNames() {
+        return stationRepository.findAllCityNames();
     }
 
     public List<NearestStation>checkoutNearestStations(Long trainId){

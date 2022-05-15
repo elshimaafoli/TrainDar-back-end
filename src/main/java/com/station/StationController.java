@@ -19,7 +19,7 @@ public class StationController {
     private final StationService stationService;
 
     @GetMapping(path = {"/all"})
-    public List<Station> getStations() {
-        return stationService.findAll();
+    public List<String> getStations() {
+        return stationService.findAllCityNames();
     }
 }
