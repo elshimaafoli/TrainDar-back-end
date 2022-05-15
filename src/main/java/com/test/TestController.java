@@ -4,15 +4,12 @@ import com.location.Location;
 import com.location.LocationService;
 import com.shared_data.path.PathPoints;
 import com.shared_data.path.PathPointsRepository;
-<<<<<<< HEAD
 import com.station.NearestStation;
 import com.station.Station;
 import com.station.StationRepository;
 import com.station.StationService;
 import com.train.TrainService;
-=======
 import com.train.Train;
->>>>>>> 366e6ce41734ed7f6868d0e2a5784cc12d6ec818
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -109,23 +106,10 @@ public class TestController {
         Location l=locationService.closest(new Location(lat1,lng1));
         return pathPointsRepository.getIDByLatLng(l.getLocationLat(),l.getLocationLng());
     }
-<<<<<<< HEAD
-    //26.55654923372615-31.693084504454426-26.557952111875835-31.69158138626245 //UP
-
-    @GetMapping(path = {"/LinearrClosest/{lat1}-{lng1}"})
-    public int c2(@PathVariable BigDecimal lat1, @PathVariable BigDecimal lng1){
-        Location l=locationService.linearClosest(new Location(lat1,lng1));
-        return pathPointsRepository.getIDByLatLng( l.getLocationLat(),l.getLocationLng());
-    }
-    //26.55654923372615-31.693084504454426-26.557952111875835-31.69158138626245 //UP
-
     @GetMapping(path="/checkoutNearestStationsTest/{id}")
     public List<NearestStation> checkoutNearestStations(@PathVariable Long id){
         return stationService.checkoutNearestStations(id);
     }
-
-=======
-    //26.55654923372615-31.693084504454426-26.557952111875835, 31.69158138626245 //UP
 
     @GetMapping(path = {"/is-active"})
     public boolean isActive(){
@@ -163,7 +147,6 @@ public class TestController {
         return pathPointsRepository.getIDByLatLng( l.getLocationLat(),l.getLocationLng());
     }
     //26.55654923372615-31.693084504454426-26.557952111875835-31.69158138626245 //UP
->>>>>>> 366e6ce41734ed7f6868d0e2a5784cc12d6ec818
 }
 
 
