@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'Train-Dar'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3B99FCBE726E4BC4AA382F54B9058E34 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4BC946E382E34B2094DED368580C29A6 }}
           package: '*.jar'
