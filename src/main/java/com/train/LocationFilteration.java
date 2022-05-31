@@ -1,6 +1,7 @@
 package com.train;
 
 import com.appuser.AppUser;
+import com.appuser.AppUserRepository;
 import com.appuser.AppUserService;
 import com.location.Location;
 import com.location.LocationService;
@@ -19,8 +20,9 @@ import java.util.*;
 public class LocationFilteration {
     private final LocationService locationService;
     private final PointsHistoryService pointsHistoryService;
-    private final TrainService trainService;
     private final AppUserService appUserService;
+    private final AppUserRepository appUserRepository;
+    private final TrainRepository trainRepository;
     private static BigDecimal getAverage(List<Pair<BigDecimal, Long>> values){
         if(values.isEmpty()){
             return Location.DEFAULT_LOCATION;
@@ -33,11 +35,21 @@ public class LocationFilteration {
     }
     private TreeSet<Long> outLiers ;
     //test
+    public void deleteUSer(Long trainId, Long userId) {
+        var existedUSer = appUserRepository.findById(userId);
+        var existedTrain = trainRepository.findById(trainId);
+        if (existedUSer.isEmpty() || existedTrain.isEmpty()) {
+            throw new IllegalStateException("can't delete user from train invalid train-id or user-id");
+        }
+        existedTrain.get().getSharedUsers().remove(existedUSer.get());
+        existedUSer.get().setTrain(null);
+        trainRepository.saveAndFlush(existedTrain.get());
+    }
     public boolean isOutLier(Long userId) {
 
         if (!outLiers.isEmpty() && outLiers.contains(userId)) {
             var user = appUserService.findById(userId);
-            trainService.deleteUSer(user.getTrain().getId(), userId);
+            deleteUSer(user.getTrain().getId(), userId);
             pointsHistoryService.points(userId, "Bad Share");
             outLiers.remove(userId);
             return true;
