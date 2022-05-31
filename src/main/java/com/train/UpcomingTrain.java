@@ -17,6 +17,6 @@ public class UpcomingTrain {
         timeLeft %= 3600;
         minutes = timeLeft / 60;
         seconds = timeLeft % 60;
-        this.timeLeft = String.valueOf(hours) + " H: " + String.valueOf(minutes) + " M: " + String.valueOf(seconds) + " s: ";
+        this.timeLeft = String.valueOf(hours) + " H: " + String.valueOf(minutes) + " M: " + String.valueOf(seconds) + " s";
     }
 }

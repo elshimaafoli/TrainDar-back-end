@@ -40,18 +40,17 @@ public class LocationService {
         return locationDistance;
     }
 
-    public Location closestLat(Location shared) { //sorted by lats
-        ArrayList<PathPoints> pathPoints;
-        //suppose it was sorted
-        pathPoints = pathPointsRepository.getAllPointsByLat();
+    public Location closestLat(Location shared) {
+        //sorted by lats
+        ArrayList<PathPoints> pathPointsByLat=pathPointsRepository.getAllPointsByLat();
         //binary search for closest point
         int first = 0;
-        int last = pathPoints.size() - 1;
+        int last = pathPointsByLat.size() - 1;
         int middle = (first + last) / 2;
         double closeValue = Location.CLOSE;
         Location middleLocation = new Location();
         while (first <= last) {
-            middleLocation = new Location(pathPoints.get(middle).getLocationLat(), pathPoints.get(middle).getLocationLng());
+            middleLocation = new Location(pathPointsByLat.get(middle).getLocationLat(), pathPointsByLat.get(middle).getLocationLng());
             if (Math.abs(distance(shared, middleLocation)) <= closeValue) {
                 return middleLocation;
             } else if (shared.getLocationLat().doubleValue() > middleLocation.getLocationLat().doubleValue()) {
@@ -65,20 +64,18 @@ public class LocationService {
         return middleLocation;
     }
 
-    public Location closestLng(Location shared) {//sorted by lngs
-
-        ArrayList<PathPoints> pathPoints;
-        //suppose it is sorted
-        pathPoints = pathPointsRepository.getAllPointsByLng();
+    public Location closestLng(Location shared) {
+        //sorted by lngs
+        ArrayList<PathPoints> pathPointsByLng=pathPointsRepository.getAllPointsByLng();
         //binary search for closest point
         int first = 0;
-        int last = pathPoints.size() - 1;
+        int last = pathPointsByLng.size() - 1;
         int middle = (first + last) / 2;
         double closeValue = Location.CLOSE;
         Location middleLocation = new Location();
 
         while (first <= last) {
-            middleLocation = new Location(pathPoints.get(middle).getLocationLat(), pathPoints.get(middle).getLocationLng());
+            middleLocation = new Location(pathPointsByLng.get(middle).getLocationLat(), pathPointsByLng.get(middle).getLocationLng());
             if (Math.abs(distance(shared, middleLocation)) <= closeValue) {
                 return middleLocation;
             } else if (shared.getLocationLng().doubleValue() > middleLocation.getLocationLng().doubleValue()) {
@@ -92,37 +89,41 @@ public class LocationService {
         //return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
     }
 
-    public Location binaryClosest(Location shared) {
+    public Location closest(Location shared) {
         Location closestLat = closestLat(shared);
         Location closestLng = closestLng(shared);
-        if (closestLng.getLocationLat().doubleValue() == 0
-                && closestLng.getLocationLng().doubleValue() == 0
-                && closestLat.getLocationLat().doubleValue() == 0
-                && closestLat.getLocationLng().doubleValue() == 0)
-            return new Location(BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        else {
-            if (distance(shared, closestLat) < distance(shared, closestLng))
-                return closestLat;
-            else return closestLng;
-        }
+        if (distance(shared, closestLat) < distance(shared, closestLng))
+            return closestLat;
+        return closestLng;
     }
 
-    public Location closest(Location shared) {
-        ArrayList<PathPoints> pathPoints;
-        //suppose it is sorted
-        pathPoints = pathPointsRepository.findAll();
-        double distance = 1e18;
-        Location closeLocation = new Location(), temp = new Location();
-        for (int i = 0; i < pathPoints.size(); i++) {
-            temp = new Location(pathPoints.get(i).getLocationLat(), pathPoints.get(i).getLocationLng());
-            if (distance > distance(shared, temp)) {
-                closeLocation = temp;
-                distance = distance(shared, temp);
-            }
-        }
-        return closeLocation;
-    }
-
+//    public Location closestLinear(Location shared) {
+//        double distance = 1e18;
+//        Location closeLocation = new Location(), temp = new Location();
+//        for (int i = 0; i < pathPoints.size(); i++) {
+//            temp = new Location(pathPoints.get(i).getLocationLat(), pathPoints.get(i).getLocationLng());
+//            if (distance > distance(shared, temp)) {
+//                closeLocation = temp;
+//                distance = distance(shared, temp);
+//            }
+//        }
+//        return closeLocation;
+//    }
+//
+//    public ArrayList<PathPoints> getAll(){
+//
+//        return pathPointsRepository.findAll();
+//    }
+//
+//    public ArrayList<PathPoints> getAllPointsByLat(){
+//
+//        return pathPointsRepository.getAllPointsByLat();
+//    }
+//
+//    public ArrayList<PathPoints> getAllPointsByLng(){
+//
+//        return pathPointsRepository.getAllPointsByLng();
+//    }
 
     public String stationDirection(String s1, String s2) {
 

@@ -2,6 +2,7 @@ package com.appuser.registration;
 
 import com.appuser.AppUser;
 import com.appuser.AppUserService;
+import com.points.PointsHistoryService;
 import com.shared_data.email.EmailSender;
 //import com.registration.token.ConfirmationToken;
 import com.shared_data.token.ConfirmationToken;
@@ -18,7 +19,7 @@ public class RegistrationService {
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
-
+    private final PointsHistoryService pointsHistoryService;
     public String register(RegistrationRequest request) {
         //ToDo: phone & number Validation;
         boolean validEmail = emailValidator.test(request.getEmail());
@@ -34,6 +35,7 @@ public class RegistrationService {
         //ToDo: change this link before deployment;
         String link= "http://localhost:8080/api/v1/registration/confirm?token="+token;
         emailSender.send(request.getEmail(),buildEmail(request.getName(),link));
+
         return token;
     }
 

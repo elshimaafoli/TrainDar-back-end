@@ -1,7 +1,10 @@
 package com.test;
 
+import com.appuser.AppUser;
+import com.appuser.AppUserRepository;
 import com.location.Location;
 import com.location.LocationService;
+import com.points.PointsHistoryService;
 import com.shared_data.path.PathPoints;
 import com.shared_data.path.PathPointsRepository;
 import com.station.NearestStation;
@@ -11,10 +14,7 @@ import com.station.StationService;
 import com.train.TrainService;
 import com.train.Train;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,6 +24,8 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("api/v1/test")
 public class TestController {
+    public PointsHistoryService pointsHistoryService;
+    public AppUserRepository appUserRepository;
     public PathPointsRepository pathPointsRepository;
     LocationService locationService;
     TrainService trainService;
@@ -39,7 +41,6 @@ public class TestController {
         returnResults.add(locationService.isPassThrough(3, 5));
         return returnResults;
     }
-
 
     //tested
     @GetMapping(path = {"/pathPointsTest"})
@@ -147,6 +148,18 @@ public class TestController {
         return pathPointsRepository.getIDByLatLng( l.getLocationLat(),l.getLocationLng());
     }
 
+    @GetMapping(path = {"/nearest-stations"})
+    public List<NearestStation> getNearestStation(@RequestParam("user-id")Long userId, @RequestParam("train-id") Long id) {
+        // pointsHistoryService.points(userId,"Nearest Station");
+        return stationService.checkoutNearestStations( id);
+    }
+
+    @GetMapping(path = {"/test-points"})
+    public void addPoints(){
+        AppUser appUser = appUserRepository.getById(1L);
+        pointsHistoryService.points(1L,"Bad Share");
+        appUserRepository.saveAndFlush(appUser);
+    }
 }
 
 
