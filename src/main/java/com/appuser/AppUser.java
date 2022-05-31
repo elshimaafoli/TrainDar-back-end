@@ -2,6 +2,7 @@ package com.appuser;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.location.Location;
+import com.points.PointsHistory;
 import com.train.Train;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -22,7 +25,8 @@ public class AppUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable = false)
+    private Long points=0L;
     @Column(nullable = false, length = 40)
     private String name;
 
@@ -59,6 +63,8 @@ public class AppUser implements UserDetails {
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] userPhoto;
      */
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "appUser")
+    private List<PointsHistory> pointsHistory;
     public AppUser(String name, String email, String password, String phone/*, LocalDate birthDate*/) {
         this.name = name;
         this.email = email;
