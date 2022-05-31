@@ -42,6 +42,7 @@ public class TrainService {
             existedTrain.setLastKnownTime(LocalDateTime.now());
             trainRepository.saveAndFlush(existedTrain);
         }
+        //todo:increase shared people.
     }
 
     public void deleteUSer(Long trainId, Long userId) {

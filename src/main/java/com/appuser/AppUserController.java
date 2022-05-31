@@ -2,6 +2,7 @@ package com.appuser;
 
 import com.appuser.login.resetpassword.ResetPasswordRequest;
 import com.location.Location;
+import com.train.LocationFilteration;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class AppUserController {
     private final AppUserService appUserService;
+    LocationFilteration locationFilteration;
     @GetMapping(path ={"/{id}"})
     public AppUser showUserById(@PathVariable Long id){
         return appUserService.findById(id);
@@ -26,7 +28,8 @@ public class AppUserController {
         return appUserService.resetPasswordInDb(resetPasswordRequest);
     }
     @PutMapping(path ={"/{id}/update-location"})
-    public void resetPasswordInDb(@PathVariable Long id, @RequestBody Location location) {
+    public boolean updateUserLocation(@PathVariable Long id, @RequestBody Location location) {
         appUserService.updateLocation(id, location);
+        return locationFilteration.isOutLier(id);
     }
 }

@@ -1,6 +1,7 @@
 package com.train;
 
 import com.location.Location;
+import com.points.PointsHistoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,25 +14,28 @@ import java.util.List;
 public class TrainController {
     private final TrainRepository trainRepository;
     private final TrainService trainService;
-
+    private final PointsHistoryService pointsHistoryService;
     @GetMapping(path = {"/view"})
     public List<Long> getTrains() {
         return trainRepository.findAllOnlyID();
     }
 
     @GetMapping(path = {"/show-upcoming-trains"})
-    public List<UpcomingTrain> showUpcomingTrains(@RequestParam("first-city") String firstCity, @RequestParam("second-city") String secondCity){
+    public List<UpcomingTrain> showUpcomingTrains(@RequestParam("user-id")Long userId,@RequestParam("first-city") String firstCity,
+                                                  @RequestParam("second-city") String secondCity){
+        pointsHistoryService.points(userId,"Up Comming Trains");
         return trainService.getUpcomingTrains(firstCity, secondCity);
     }
 
-    @GetMapping(path ={"/{id}"})
-    public Train showTrainById(@PathVariable Long id){
-        return trainRepository.findById(id).get();
-    }
+//    @GetMapping(path ={"/{id}"})
+//    public Train showTrainById(@PathVariable Long id){
+//        return trainRepository.findById(id).get();//return train
+//    }
 
     @GetMapping(path = {"/view/{id}"})
-    public Location getTrainLocation(@PathVariable Long id) {
-        return trainService.findById(id);
+    public Location getTrainLocation(@RequestParam("user-id")Long userId,@PathVariable Long id) {
+        pointsHistoryService.points(userId,"Search");
+        return trainService.findById(id);//return location
     }
 
     @PutMapping("/add-user")
@@ -46,7 +50,4 @@ public class TrainController {
         return "deleted";
     }
 
-    // to get next station of a train
-    //TODO: path = {"/path/next"}
-    //TODO: remove outliers
 }

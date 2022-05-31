@@ -24,21 +24,20 @@ public class StationService {
         return stationRepository.findAllCityNames();
     }
 
-    public List<NearestStation>checkoutNearestStations(Long trainId){
-        Train train=trainRepository.getById(trainId);
-        List<NearestStation>nearestStations=new ArrayList<>();
-        List<TrainStation>trainStations=train.getStations();
+    public List<NearestStation> checkoutNearestStations(Long trainId) {
+        Train train = trainRepository.getById(trainId);
+        List<NearestStation> nearestStations = new ArrayList<>();
+        List<TrainStation> trainStations = train.getStations();
 
-        for (var station : trainStations){
+        for (var station : trainStations) {
 
-            Location trainLocation=new Location(train.getLocationLat(),train.getLocationLng()),
-            stationLocation = new Location(station.getStation().getLocationLat(), station.getStation().getLocationLng());
+            Location trainLocation = new Location(train.getLocationLat(), train.getLocationLng()),
+                    stationLocation = new Location(station.getStation().getLocationLat(), station.getStation().getLocationLng());
 
-            if (train.getDirection().equals(locationService.DirectionUpDown(trainLocation,stationLocation)))
-            {
+            if (train.getDirection().equals(locationService.DirectionUpDown(trainLocation, stationLocation))) {
                 nearestStations.add(
                         new NearestStation(station.getStation().getName(),
-                                locationService.timeLeft(trainLocation,stationLocation)));
+                                locationService.timeLeft(trainLocation, stationLocation)));
             }
         }
         return nearestStations;

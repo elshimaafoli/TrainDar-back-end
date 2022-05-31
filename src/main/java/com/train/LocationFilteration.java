@@ -1,8 +1,10 @@
 package com.train;
 
 import com.appuser.AppUser;
+import com.appuser.AppUserService;
 import com.location.Location;
 import com.location.LocationService;
+import com.points.PointsHistoryService;
 import com.shared_data.UserLocation;
 import com.shared_data.custom_data_types.Pair;
 import lombok.*;
@@ -16,7 +18,9 @@ import java.util.*;
 @Component
 public class LocationFilteration {
     private final LocationService locationService;
-
+    private final PointsHistoryService pointsHistoryService;
+    private final TrainService trainService;
+    private final AppUserService appUserService;
     private static BigDecimal getAverage(List<Pair<BigDecimal, Long>> values){
         if(values.isEmpty()){
             return Location.DEFAULT_LOCATION;
@@ -27,13 +31,26 @@ public class LocationFilteration {
         }
         return sum.divide(BigDecimal.valueOf(values.size()),16, RoundingMode.HALF_UP);
     }
+    private TreeSet<Long> outLiers ;
+    //test
+    public boolean isOutLier(Long userId) {
+
+        if (!outLiers.isEmpty() && outLiers.contains(userId)) {
+            var user = appUserService.findById(userId);
+            trainService.deleteUSer(user.getTrain().getId(), userId);
+            pointsHistoryService.points(userId, "Bad Share");
+            outLiers.remove(userId);
+            return true;
+        }
+        pointsHistoryService.points(userId, "Good Share");
+        return false;
+    }
 
     public Location removeOutliers(List<AppUser> users) {
         //filter users to git only the users that on the railway line
 
         List<UserLocation> locations = new ArrayList<>();
-        //TODO: remove the outliers
-        TreeSet<Long> outLiers = new TreeSet<>();
+        outLiers= new TreeSet<>();
         //git out users that are far away from railway line
         var tempOutLiers = locationService.outOfRange(users);
         for(var user : tempOutLiers){
@@ -62,8 +79,10 @@ public class LocationFilteration {
         Collections.sort(lngs);
         Collections.sort(lats);
         int sz = lats.size();
-        if (sz % 2 == 0) {//if vector size is even, mid is two values
-            if (sz % 4 == 0) {//then q1,q3 have 2 values each
+        if (sz % 2 == 0) {
+            //if vector size is even, mid is two values
+            if (sz % 4 == 0) {
+                //then q1,q3 have 2 values each
                 //calculate q1,q3 for lat
                 latQ1 = lats.get(sz / 4).first.add(lats.get(sz / 4 - 1).first).divide(BigDecimal.valueOf(2.0),16, RoundingMode.HALF_UP);
                 latQ3 = lats.get(sz * 3 / 4).first.add(lats.get(sz * 3 / 4 - 1).first).divide(BigDecimal.valueOf(2.0),16, RoundingMode.HALF_UP);
@@ -78,7 +97,9 @@ public class LocationFilteration {
                 lngQ1 = lngs.get(sz / 4).first;
                 lngQ3 = lngs.get(sz * 3 / 4).first;
             }
-        } else {//if vector size is odd, mid is one value
+        }
+        else {
+            //if vector size is odd, mid is one value
             if ((sz - 1) % 4 == 0) {//then q1,q3 have 2 values each
                 //calculate q1,q3 for lat
                 latQ1 = lats.get(sz / 4).first.add(lats.get(sz / 4 - 1).first).divide(BigDecimal.valueOf(2.0),16, RoundingMode.HALF_UP);
@@ -111,7 +132,17 @@ public class LocationFilteration {
                 filteredLngs.add(new Pair<>(lngs.get(i).first, lngs.get(i).second));
             }
         }
+    //outliers + x
+        //todo :increase outlier users
+//        List<Long> arrayOutliers=new ArrayList<>(outLiers);
+//        for (int index=0;index<arrayOutliers.size();index++)
+//        {
+//            pointsHistoryService.points(arrayOutliers.get(index),"Bad Share");
+//        }
+
         // return closest location
         return locationService.closest(new Location(getAverage(filteredLats), getAverage(filteredLngs)));
     }
+
+
 }
