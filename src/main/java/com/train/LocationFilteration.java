@@ -34,7 +34,7 @@ public class LocationFilteration {
         return sum.divide(BigDecimal.valueOf(values.size()),16, RoundingMode.HALF_UP);
     }
     private TreeSet<Long> outLiers ;
-    //test
+    //todo: test deleteuser
     public void deleteUSer(Long trainId, Long userId) {
         var existedUSer = appUserRepository.findById(userId);
         var existedTrain = trainRepository.findById(trainId);
@@ -45,6 +45,7 @@ public class LocationFilteration {
         existedUSer.get().setTrain(null);
         trainRepository.saveAndFlush(existedTrain.get());
     }
+
     public boolean isOutLier(Long userId) {
 
         if (!outLiers.isEmpty() && outLiers.contains(userId)) {

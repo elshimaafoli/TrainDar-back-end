@@ -15,7 +15,7 @@ public class TrainController {
     private final TrainRepository trainRepository;
     private final TrainService trainService;
     private final PointsHistoryService pointsHistoryService;
-    @GetMapping(path = {"/view"})
+    @GetMapping(path = {"/view-all"})
     public List<Train> getTrains() {
         return trainRepository.findAll();
     }
@@ -32,10 +32,10 @@ public class TrainController {
 //        return trainRepository.findById(id).get();//return train
 //    }
 
-    @GetMapping(path = {"/view/{id}"})
-    public Location getTrainLocation(@RequestParam("user-id")Long userId,@PathVariable Long id) {
+    @GetMapping(path = {"/view"})
+    public Location getTrainLocation(@RequestParam("user-id")Long userId,@RequestParam("train-id") Long trainId) {
         pointsHistoryService.points(userId,"Search");
-        return trainService.findById(id);//return location
+        return trainService.findById(trainId);//return location
     }
 
     @PutMapping("/add-user")
