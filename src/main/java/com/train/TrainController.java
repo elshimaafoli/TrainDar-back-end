@@ -16,8 +16,8 @@ public class TrainController {
     private final TrainService trainService;
     private final PointsHistoryService pointsHistoryService;
     @GetMapping(path = {"/view-all"})
-    public List<Train> getTrains() {
-        return trainRepository.findAll();
+    public List<Long> getTrains() {
+        return trainRepository.findAllOnlyID();
     }
 
     @GetMapping(path = {"/show-upcoming-trains"})
