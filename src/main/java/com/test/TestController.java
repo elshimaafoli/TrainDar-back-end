@@ -154,11 +154,9 @@ public class TestController {
         return stationService.checkoutNearestStations( id);
     }
 
-    @GetMapping(path = {"/test-points"})
-    public void addPoints(){
-        AppUser appUser = appUserRepository.getById(1L);
-        pointsHistoryService.points(1L,"Bad Share");
-        appUserRepository.saveAndFlush(appUser);
+    @GetMapping(path = {"/out"})
+    public boolean ss(@RequestParam("lat")BigDecimal lat, @RequestParam("lng") BigDecimal lng){
+        return locationService.out(new Location(lat,lng));
     }
 }
 
