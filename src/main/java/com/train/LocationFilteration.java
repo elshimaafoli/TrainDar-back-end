@@ -33,7 +33,7 @@ public class LocationFilteration {
         }
         return sum.divide(BigDecimal.valueOf(values.size()),16, RoundingMode.HALF_UP);
     }
-    private TreeSet<Long> outLiers ;
+    private TreeSet<Long> outLiers;
     //todo: test deleteuser
     public void deleteUSer(Long trainId, Long userId) {
         var existedUSer = appUserRepository.findById(userId);
@@ -63,7 +63,7 @@ public class LocationFilteration {
         //filter users to git only the users that on the railway line
 
         List<UserLocation> locations = new ArrayList<>();
-        outLiers= new TreeSet<>();
+        //outLiers= new TreeSet<>();
         //git out users that are far away from railway line
         var tempOutLiers = locationService.outOfRange(users);
         for(var user : tempOutLiers){
@@ -154,7 +154,9 @@ public class LocationFilteration {
 //        }
 
         // return closest location
-        return locationService.closest(new Location(getAverage(filteredLats), getAverage(filteredLngs)));
+          return locationService.closest(new Location(getAverage(filteredLats), getAverage(filteredLngs)));
+       //return  new Location(getAverage(filteredLats), getAverage(filteredLngs));
+
     }
 
 
