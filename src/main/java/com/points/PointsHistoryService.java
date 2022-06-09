@@ -75,7 +75,8 @@ public class PointsHistoryService {
             if (user.getPoints() - 2 >= 0) {
                 user.setPoints(user.getPoints() - 2);
             } else {
-                throw new IllegalStateException("User does not have enough points");
+                return;
+                //throw new IllegalStateException("User does not have enough points");
             }
             details = "Points deducted for false location sharing";
             pointsHistory.setToName("TrainDar");
@@ -83,10 +84,11 @@ public class PointsHistoryService {
             pointsHistory.setAmount(2l);
         } else if (subject == "Good Share") {
             user.setPoints(user.getPoints() + 2);
-            pointsHistory.setToName("YOU");
+            return;
+            /*pointsHistory.setToName("YOU");
             pointsHistory.setFromName("TrainDar");
             pointsHistory.setAmount(2l);
-            return;
+            return;*/
         } else if (subject == "Up Coming Trains") {
             if (user.getPoints() - 3 >= 0) {
                 user.setPoints(user.getPoints() - 3);
