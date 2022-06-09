@@ -26,6 +26,6 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE AppUser a " + "SET a.locationLng =?2, a.locationLat =?3 WHERE a.id = ?1")
+    @Query("UPDATE AppUser a " + "SET a.locationLng =?3, a.locationLat =?2 WHERE a.id = ?1")
     void updateLocation(Long id, BigDecimal locationLat, BigDecimal locationLng);
 }
