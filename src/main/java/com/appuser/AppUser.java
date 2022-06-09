@@ -26,7 +26,7 @@ public class AppUser implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private Long points=0L;
+    private Long points=500L;
     @Column(nullable = false, length = 40)
     private String name;
 

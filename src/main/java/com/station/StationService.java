@@ -40,6 +40,10 @@ public class StationService {
                                 locationService.timeLeft(trainLocation, stationLocation)));
             }
         }
+        if (nearestStations.size()==0){
+            throw new IllegalStateException("There is no available stations");
+        }
+
         return nearestStations;
     }
 
