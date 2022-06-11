@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 @Service
 @AllArgsConstructor
@@ -43,7 +44,9 @@ public class StationService {
         if (nearestStations.size()==0){
             throw new IllegalStateException("There is no available stations");
         }
-
+        if (train.getDirection().equals("DOWN")){
+            Collections.reverse(nearestStations);
+        }
         return nearestStations;
     }
 
