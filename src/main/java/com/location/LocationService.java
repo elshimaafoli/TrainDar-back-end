@@ -150,7 +150,7 @@ public class LocationService {
         } else return "SAME";
     }
 
-    boolean out(Location location) {
+    public boolean out(Location location) {
         Location close = closest(location);
         if (distance(close, location) > 30d)
             return true;
@@ -161,7 +161,7 @@ public class LocationService {
         List<AppUser> outs = new ArrayList<>();
         for (AppUser user : users) {
             Location shared = new Location(user.getLocationLat(), user.getLocationLng());
-            if (out(closest(shared))) {
+            if (out(shared)) {
                 outs.add(user);
             }
         }
@@ -173,7 +173,7 @@ public class LocationService {
         Location shared;
         for (AppUser user : users) {
             shared = new Location(user.getLocationLat(), user.getLocationLng());
-            if (!out(closest(shared))) {
+            if (!out(shared)) {
                 ins.add(user);
             }
         }
