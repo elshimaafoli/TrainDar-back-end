@@ -113,8 +113,8 @@ public class TrainService {
                     )
                     ));
         }
-        if (upcomingTrains.size()==0)
-            throw new IllegalStateException("There is no available trains");
+//        if (upcomingTrains.size()==0)
+//            throw new IllegalStateException("There is no available trains");
         Collections.sort(upcomingTrains);
         return upcomingTrains;
     }
