@@ -151,7 +151,12 @@ public class TestController {
     @GetMapping(path = {"/nearest-stations"})
     public List<NearestStation> getNearestStation(@RequestParam("user-id")Long userId, @RequestParam("train-id") Long id) {
         // pointsHistoryService.points(userId,"Nearest Station");
-        return stationService.checkoutNearestStations( id);
+        List<NearestStation> x=new ArrayList<>();
+        x.add(new NearestStation("aswan",50));
+        x.add(new NearestStation("lybia",500));
+        if (id==1)
+            throw new IllegalStateException("exception");
+        return x;
     }
 
     @GetMapping(path = {"/out"})

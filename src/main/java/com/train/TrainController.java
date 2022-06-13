@@ -23,14 +23,14 @@ public class TrainController {
     @GetMapping(path = {"/show-upcoming-trains"})
     public List<UpcomingTrain> showUpcomingTrains(@RequestParam("user-id")Long userId,@RequestParam("first-city") String firstCity,
                                                   @RequestParam("second-city") String secondCity){
-        pointsHistoryService.points(userId,"Up Comming Trains");
+        pointsHistoryService.points(userId,"Up Coming Trains");
         return trainService.getUpcomingTrains(firstCity, secondCity);
     }
 
-//    @GetMapping(path ={"/{id}"})
-//    public Train showTrainById(@PathVariable Long id){
-//        return trainRepository.findById(id).get();//return train
-//    }
+    @GetMapping(path ={"/{id}"})
+    public Train showTrainById(@PathVariable Long id){
+        return trainRepository.findById(id).get();//return train
+    }
 
     @GetMapping(path = {"/view"})
     public Location getTrainLocation(@RequestParam("user-id")Long userId,@RequestParam("train-id") Long trainId) {
