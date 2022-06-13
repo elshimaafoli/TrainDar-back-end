@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -115,6 +113,9 @@ public class TrainService {
                     )
                     ));
         }
+//        if (upcomingTrains.size()==0)
+//            throw new IllegalStateException("There is no available trains");
+        Collections.sort(upcomingTrains);
         return upcomingTrains;
     }
 
