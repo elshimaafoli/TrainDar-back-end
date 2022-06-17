@@ -33,7 +33,7 @@ public class RegistrationService {
                 request.getPhone()
         ));
         //ToDo: change this link before deployment;
-        String link= "http://localhost:8080/api/v1/registration/confirm?token="+token;
+        String link= "https://train-dar.azurewebsites.net/api/v1/registration/confirm?token="+token;
         emailSender.send(request.getEmail(),buildEmail(request.getName(),link));
 
         return token;
