@@ -119,4 +119,16 @@ public class TrainService {
         return upcomingTrains;
     }
 
+    //get only active trains and wee can know that if the train's location is not default
+    //to know if train is active or not we use the function "isTrainActive" in LocationService Class
+    public List<Long> getActiveTrains() {
+        List<Long> activeTrains = new ArrayList<>();
+        for (var train : trainRepository.findAll()) {
+            if (locationService.isTrainActive(train)) {
+                activeTrains.add(train.getId());
+            }
+        }
+        return activeTrains;
+    }
+
 }
