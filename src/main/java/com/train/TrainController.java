@@ -1,10 +1,12 @@
 package com.train;
 
 import com.location.Location;
+import com.location.LocationService;
 import com.points.PointsHistoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,9 +17,15 @@ public class TrainController {
     private final TrainRepository trainRepository;
     private final TrainService trainService;
     private final PointsHistoryService pointsHistoryService;
+    private final LocationService locationService;
     @GetMapping(path = {"/view-all"})
     public List<Long> getTrains() {
         return trainRepository.findAllOnlyID();
+    }
+
+    @GetMapping(path = {"/view-all-active"})
+    public List<Long> getActiveTrains() {
+        return trainService.getActiveTrains();
     }
 
     @GetMapping(path = {"/show-upcoming-trains"})

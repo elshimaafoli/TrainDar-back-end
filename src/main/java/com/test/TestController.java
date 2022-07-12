@@ -11,6 +11,7 @@ import com.station.NearestStation;
 import com.station.Station;
 import com.station.StationRepository;
 import com.station.StationService;
+import com.train.TrainRepository;
 import com.train.TrainService;
 import com.train.Train;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class TestController {
     public PointsHistoryService pointsHistoryService;
     public AppUserRepository appUserRepository;
     public PathPointsRepository pathPointsRepository;
+    TrainRepository trainRepository;
     LocationService locationService;
     TrainService trainService;
     StationService stationService;
@@ -162,6 +164,15 @@ public class TestController {
     @GetMapping(path = {"/out"})
     public boolean ss(@RequestParam("lat")BigDecimal lat, @RequestParam("lng") BigDecimal lng){
         return locationService.out(new Location(lat,lng));
+    }
+
+    @GetMapping(path = {"/update"})
+    public void update(){
+        for(var train : trainRepository.findAll()){
+            long x = train.getId();
+            var exicted = trainRepository.findById(train.getId());
+            x = exicted.get().getId();
+        }
     }
 }
 
